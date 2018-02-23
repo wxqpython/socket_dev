@@ -52,18 +52,20 @@ client.close() # 关闭连接
 
 1  什么是协程?
    协程就是单线程里在代码上实现切换运行，纯代码实现，对系统不可见
+ greenlet是一个协程模块
+ gevent是一个greenlet + libevent的异步非阻塞IO模块
  
 2 如何理解异步非阻塞？
-   异步： 就是回调
+   异步： 就是回调，利用select监听socket变化，执行某函数
+   非阻塞： 不等待,比如 创建连接时，套接字setblocking(False)后就能批量发出请求，不管连接成功与否，连接成功与否交给select监听执行回调
+   
+3 异步IO模块本质？
+   一类基于协程：   协程+非阻塞socket+select实现，如： gevent
+   一类基于事件循环:完全通过socket + select实现， 如： Twisted/Tornado 
 
+### select如何使用
 select: 用select实现的伪异步IO多路复用
 IO多路复用： 单线程里同时监听多个socket对象的变化，达到伪并发IO或异步非阻塞IO
-greenlet是一个协程模块
-gevent是一个greenlet + libevent的异步非阻塞IO模块
-
-select可读：客户端发出 sock.connect()后等待服务端返回连接成功这个过程称为socket可读
-select可写：连接成功后客户端发送数据，等待服务端返回数据这个过程称为socket可写
-
 
 socket+select简单示例
 
