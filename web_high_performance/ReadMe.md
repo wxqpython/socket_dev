@@ -198,4 +198,29 @@ if __name__ == "__main__":
 
 
 
-## 第二节 
+## 自定义web框架
+以前我们学习异步IO模块都是写socket客户端，Tornado `from tornado import httpclient`用来提高爬虫效率也是相关于socket客户端。
+
+这里我们是写socket服务端。
+
+快速入手一个socket服务端程序
+```
+import socket,select,time
+
+sock = socket.socket()
+sock.bind(('127.0.0.1',9988))
+sock.listen(10)
+
+while True:
+    client,addr = sock.accept()
+    data=client.recv(8096)
+    client.sendall(b'/ HTTP/1.1 200 OK\r\n\r\n')  # 注意正规的响应头，否则客户端接收不到响应数据
+    client.sendall(b'xxxxx')
+    client.close()
+```
+
+这种是阻塞式的，我们加上setblocking(False)变为非阻塞式，就要引入select监听socket来回调执行数据处理了
+```
+ss
+```
+
