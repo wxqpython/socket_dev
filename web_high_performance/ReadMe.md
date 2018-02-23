@@ -5,16 +5,13 @@
 
 ## 一、 异步非阻塞知识
 
-提高并发方法一： 多线程 多进程
-
-```
-多线程，多进程，线程池，进程池:
+提高并发方法一： 多线程 多进程/线程池进程池
 
 python2没有线程池，有进程池
 
 python3有线程池，也有进程池
 
-
+```
 # from  threading import Thread
 from  concurrent.futures import ThreadPoolExecutor,ProcessPoolExecutor
 pool = ThreadPoolExecutor(10)    # 最多创建10个线程,要求不高的情况下，线程池就可以了
