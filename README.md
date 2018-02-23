@@ -220,6 +220,76 @@ while True:
 
 ## 二、异步IO模块
 
+当我们用requests.ge扒取网页时可以用进程池或线程池提交并发，并采用回调机制处理返回数据.
+
+这里有一个知识点就是future对象，`fu = pool.submit(download,url)` submit()返回的就是future对象，download()函数返回的结果封装在fu.result()里，
+当回调时，fu.add_done_callback(write) ，fu对象被当作参数传给write(fu)函数，write(fu)函数内部用fu.result()可以得到download函数返回的结果。
+
+```
+import requests
+
+from concurrent.futures import ThreadPoolExecutor
+pool = ThreadPoolExecutor(2)
+
+url_list = [
+    'http://www.baidu.com',
+    'http://www.digmyth.com',
+    'http://www.github.com',
+]
+
+def write(future):
+    response = future.result()
+    with open('a.txt','wb+') as f:
+        f.write(response.content)
+
+def download(url):
+    response = requests.get(url)
+    print('download complete',url)
+    return  response
+
+for url in url_list:
+    print('starting down', url)
+    fu = pool.submit(download,url) # submit()返回future对象
+    fu.add_done_callback(write)
+```
+
+对这段代码进一步封装
+nb_thread.py示例代码
+```
+import requests
+from  concurrent.futures import ThreadPoolExecutor
+def download(url):
+    response=requests.get(url)
+    return response
+def run(url_list=None):
+    pool = ThreadPoolExecutor(2)
+    for item in url_list:
+        url = item['url']
+        callback = item['callback']
+        future=pool.submit(download, url)
+        future.add_done_callback(callback)
+```
+
+test.py示例代码
+```
+from pro_threading import nb_thread
+
+def f1(future):
+    print(future.result().content)
+def f2(arg):
+    print("future")
+def f3(future):
+    print("future")
+url_list = [
+    {'url':'http://www.baidu.com','callback':f1},
+    {'url':'http://www.digmyth.com','callback':f2},
+    {'url':'http://www.github.com','callback':f3},
+]
+
+nb_thread.run(url_list)
+```
+
+
 
 ## 三、高性能异步非阻塞框架
 
