@@ -112,8 +112,10 @@ while True:
 测试服务端并发： 先启动socket_server.py,后启动socket_clientx.py
 
 
-小结： 服务端单线程同时监听了多个socket对象，表明实现了并发连接或IO多路复用，但真正实现了并发吗？当并发边连接有IO请求时还是占住了资源
-       那么在下一个例子中用线程处理IO请求实现真正的IO并发
+小结：
+
+服务端单线程同时监听了多个socket对象，表明实现了并发连接或IO多路复用，但真正实现了并发吗？
+当并发边连接有IO请求时还是占住了资源,那么在下一个例子中用线程处理IO请求实现真正的IO并发
        
 4.2 示例三
 
@@ -220,7 +222,7 @@ while True:
 
 ## 二、异步IO模块
 
-当我们用requests.ge扒取网页时可以用进程池或线程池提交并发，并采用回调机制处理返回数据.
+当我们用requests.ge扒取网页时可以用进程池或线程池提高并发，并采用回调机制处理返回数据.
 
 这里有一个知识点就是future对象，`fu = pool.submit(download,url)` submit()返回的就是future对象，download()函数返回的结果封装在fu.result()里，
 当回调时，fu.add_done_callback(write) ，fu对象被当作参数传给write(fu)函数，write(fu)函数内部用fu.result()可以得到download函数返回的结果。
@@ -288,6 +290,11 @@ url_list = [
 
 nb_thread.run(url_list)
 ```
+
+先对上面代码作一个总结:
+
+1 future对象对数据的封装，后续还要进一步学习future.set_result(666), 如何在回调函数中取得666,只有fu.set_result()才会断开连接
+2 多进程，多线程在一定程序上提高了并发，但在单线程里如何实现并发，这就要用到异步非阻塞知识了。
 
 
 
