@@ -170,8 +170,8 @@ sock.bind(('127.0.0.1',8008))
 ```
 
 ```
-conn,addr = client.accept()    # accept()成功后马上recv()阻塞
-conn.setblocking(False)        #recv()不阻塞了，这里是对recv()生效
+client,addr = sock.accept()    # accept()成功后马上recv()阻塞
+client.setblocking(False)        #recv()不阻塞了，这里是对recv()生效
 ```
 
 浏览器会自动向服务端请求头的一些数据，process_data()函数对请求头做了结构化处理，同时浏览器请求什么URL，服务端就会返回什么URL
