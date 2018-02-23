@@ -8,7 +8,7 @@ python中网络编程主要有socket/socketserver（socket这里包括自己用s
 
 4.1 示例一
 
-web浏览器和socket_server交互,浏览器将收到服务端返回的数据
+web浏览器和socket_server交互,浏览器将收到服务端返回的数据,这里只能监听一个socket，多个浏览器请求到达accept时阻塞
 ```
 # socket_server.py
 import socket
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
 4.2 示例二
 
-socket + select 实现IO多路复用
+socket + select 实现IO多路复用，所谓多路复用就是利用select实现监同时监听多个socket,但同一个socket收到多个浏览器请求到达accept时还是阻塞
 ```
 # socket_server.py
 import select
@@ -120,6 +120,8 @@ while True:
 4.2 示例三
 
 select + 线程实现真正的多并发
+当服务端accept()连接成功后，可以另开启线程处理收发数据IO请求，以提高效率，但同一个socket收到多个浏览器请求到达accept时还是阻塞
+
 ```
 import select
 import socket
@@ -160,8 +162,21 @@ server.serve_forever()
 
 4.2 示例四
 
+为了实现不阻塞，需要撑握知识点
+```
+sock = socket.socket()
+sock.setblocking(False)   #不阻塞了，这里是对accept()生效
+sock.bind(('127.0.0.1',8008))
+```
+
+```
+conn,addr = client.accept()    # accept()成功后马上recv()阻塞
+conn.setblocking(False)        #recv()不阻塞了，这里是对recv()生效
+```
+
 浏览器会自动向服务端请求头的一些数据，process_data()函数对请求头做了结构化处理，同时浏览器请求什么URL，服务端就会返回什么URL
 在此基础上可以用类封装为一个web框架邹形
+
 ```
 import select
 import socket
