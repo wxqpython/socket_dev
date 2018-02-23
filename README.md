@@ -222,6 +222,8 @@ while True:
 
 ## 二、异步IO模块
 
+#### 多线程、多进程
+
 当我们用requests.ge扒取网页时可以用进程池或线程池提高并发，并采用回调机制处理返回数据.
 
 这里有一个知识点就是future对象，`fu = pool.submit(download,url)` submit()返回的就是future对象，download()函数返回的结果封装在fu.result()里，
@@ -293,8 +295,32 @@ nb_thread.run(url_list)
 
 先对上面代码作一个总结:
 
+```
 1 future对象对数据的封装，后续还要进一步学习future.set_result(666), 如何在回调函数中取得666,只有fu.set_result()才会断开连接
 2 多进程，多线程在一定程序上提高了并发，但在单线程里如何实现并发，这就要用到异步非阻塞知识了。
+```
+
+#### 内置异步IO模块
+有协程实现的异步IO模块
+	
+pip3 instal gevent
+
+```
+import gevent
+import requests
+def func(url):
+    response = requests.get(url)
+    print(response.url)
+gevent.joinall([
+    gevent.spawn(func,'http://www.baidu.com'),
+    gevent.spawn(func,'http://www.digmyth.com'),
+    gevent.spawn(func,'http://www.github.com'),
+])
+```
+
+#### 自定义
+
+
 
 
 
