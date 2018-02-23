@@ -1,8 +1,17 @@
-http://www.cnblogs.com/wupeiqi/articles/6229292.html
+# 所有高性能相关（异步非阻塞知识，异步非阻塞web框架）
 
-# 高性能相关
-多线程，多进程，线程池，进程池: 
+参考博客： http://www.cnblogs.com/wupeiqi/articles/6229292.html
+
+
+## 一、 异步非阻塞知识
+
+提高并发方法一： 多线程 多进程
+
+```
+多线程，多进程，线程池，进程池:
+
 python2没有线程池，有进程池
+
 python3有线程池，也有进程池
 
 
@@ -16,14 +25,17 @@ def task(url):
 url_list = [...]
 for url in url_list:
    pool.submit(task,url)
+```
 
+提高并发方法二： 异步非阻塞
 
-异步IO性能更高: 
-一个线程完成有IO的并发操作: 有很多模块实现 asyncio 
+异步IO性能比多进程多线程更高，一个线程完成有IO的并发操作: 有很多模块实现 asyncio 
+```
 非阻塞： 不等待
-异步： 回调
+异步：   回调
 IO多路复用：
 select: 检测socket对象是否发生变化（是否连接成功，是否有数据到来）
+```
 
 socket客户端代码示例
 ```
@@ -94,12 +106,10 @@ socket_client客户端一个线程并发socket请求，就要用到socket+select
 
 
 
-
-tmp
-
+## 二、异步非阻塞web框架
 
 
-## 第一节
+
 阻塞模式： 在一个线程内，一个请求未处理完成，后续请求一直等待（Django，Flask,Bottle）
           对于阻塞模式提高性能： 多线程多进程
 非阻塞模式：在一个线程内，一个请求在处理IO这段空闲时间内可以让后续请求进来继续处理，有请求处理结果返回时回调一个函数这种模式称为非阻塞模式
