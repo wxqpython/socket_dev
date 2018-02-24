@@ -25,9 +25,9 @@ def main():
     sock.listen(5)
 
     while True:
-        conn,addr = sock.accept()
-        handle_process(conn)
-        conn.close()
+        client,addr = sock.accept()
+        handle_process(client)
+        client.close()
 
 if __name__ == '__main__':
     main()
